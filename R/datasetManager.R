@@ -29,10 +29,11 @@ factorizarDataframe <- function(df, num){
   return (df)
 }
 
-numero <- 0
+pkg.env <- new.env()
+pkg.env$numero <- 0
 sig_num <- function(){
-  numero <<- numero + 1
-  return(numero)
+  pkg.env$numero <- pkg.env$numero + 1
+  return(pkg.env$numero)
 }
 
 dataset <- function(datos, id, factorizar=0){
@@ -47,18 +48,18 @@ dataset <- function(datos, id, factorizar=0){
   return(object)
 }
 
-leer_datos <- function(path, id, encabezado=FALSE, sep="", dec=".", factorizar=0){
+leer_datos <- function(path, id, encabezado=FALSE, sep=",", dec=".", factorizar=0){
   df <- read.table(path, header=encabezado, sep=sep, dec=dec, stringsAsFactors = FALSE)
-  if (missing(id) | !is(id,"character")){
+  if (missing(id) || !is(id,"character")){
     id <- as.character(sig_num())
   }
   ds <- dataset(df, id, factorizar)
   return(ds)
 }
 
-guardar_datos <- function(path, ds){
-  write.csv(ds@data, file=path)
-}
 
+guardar_datos <- function(path, ds){
+  write.csv(ds@data, file=path, quote = FALSE, row.names = FALSE)
+}
 
 
