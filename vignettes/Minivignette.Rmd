@@ -1,0 +1,38 @@
+---
+title: "Minivignette"
+author: "Erik"
+date: "`r Sys.Date()`"
+output: pdf_document
+vignette: |
+  %\VignetteIndexEntry{Ejemplo de miniviñeta}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Miniviñeta
+
+El objetivo de esta miniviñeta es mostrar ejemplos de cómo se puede usar el paquete.
+
+```{r, include=FALSE}
+library(smer)
+```
+
+
+### Creacion de dataset
+
+```{r}
+ds2<-dataset(c(3,3,5,8,9,5), id="prueba", factorizar = 5)
+ds2
+ds2@data$datos
+```
+```{r}
+ds3 <- leer_datos('datos/LecturaCSV_R.csv', encabezado = TRUE, factorizar=3)
+ds3
+ds3@data$Conseguido
+guardar_datos('datos/Guardado.csv', ds3)
+```
+
