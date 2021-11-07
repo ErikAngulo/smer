@@ -1,7 +1,7 @@
 Package: smer
 Type: Package
 Title: Easy-to-use dataframe statistical analysis
-Version: 0.1.0
+Version: 0.1.1
 Author: Erik Angulo [aut]
 Maintainer: Erik Angulo <eangulo014@ikasle.ehu.eus>
 Description: El objetivo de este paquete es facilitar la aplicación de cálculos y estadísticos en datos a usuarios que dispongan de poca experiencia en el ámbito de la programación. También es adecuado para conseguir los resultados deseados automáticamente en pocas líneas de código sin necesidad de programar nada.
@@ -9,6 +9,7 @@ Description: El objetivo de este paquete es facilitar la aplicación de cálculo
 Suggests:
     knitr,
     rmarkdown
+Imports: methods
 License: GPL (>=2)
 Encoding: UTF-8
 BuildVignettes: TRUE
