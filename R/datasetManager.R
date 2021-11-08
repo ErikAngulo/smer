@@ -16,19 +16,20 @@ factorizarDataframe <- function(df, num){
   factores <- apply(df, MARGIN=2, FUN=unique)
   #if one col, returns factor. If > 1, returns factors in vector
   if (ncol(df) == 1){
-    if (length(factores) <= num){
+    if (length(factores) <= num && !is.logical(factores[1])){
       df[,1] <- factor(df[,1])
     }
     return (df)
   }
-  for (i in range(1:length(factores))){
-    if (lengths(factores)[i] <= num){
+  for (i in 1:length(factores)){
+    if (lengths(factores)[i] <= num && !'TRUE' %in% factores[[i]] && !'FALSE' %in% factores[[i]]){
       df[,i] <- factor(df[,i])
     }
   }
   return (df)
 }
 
+#global variable for package
 pkg.env <- new.env()
 pkg.env$numero <- 0
 sig_num <- function(){
@@ -62,4 +63,25 @@ guardar_datos <- function(path, ds){
   write.csv(ds@data, file=path, quote = FALSE, row.names = FALSE)
 }
 
+
+nombres_columna <- function(ds, nombres, columnas = NULL){
+  if (length(nombres) == ncol(ds@data)){
+    colnames(ds@data) <- nombres
+  }
+  else if (!is.null(columnas) && length(nombres) == length(columnas) && max(columnas) <= ncol(ds@data) && min(columnas) >= 1){
+    colnames(ds@data)[columnas] <- nombres
+  }
+  else{
+    if (is.null(columnas)){
+      stop("Se deben especificar índices o renombrar todas las columnas")
+    }
+    else if (length(nombres) != length(columnas)){
+      stop(paste("Faltan nombres de columas o índices por definir; o mayor que columnas tiene el dataset: ",ncol(ds@data)))
+    }
+    else{
+      stop(paste("Los índices han de encontrarse entre 1 y ", ncol(ds@data)))
+    }
+  }
+  return(ds)
+}
 

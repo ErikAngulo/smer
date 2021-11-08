@@ -30,9 +30,15 @@ ds2
 ds2@data$datos
 ```
 ```{r}
-ds3 <- leer_datos('datos/LecturaCSV_R.csv', encabezado = TRUE, factorizar=3)
+ds3 <- leer_datos('datos/LecturaCSV_R.csv', encabezado = TRUE, factorizar=6)
 ds3
+ds3@data$Participante
 ds3@data$Conseguido
 guardar_datos('datos/Guardado.csv', ds3)
+
+ds3 <- nombres_columna(ds3, c("1", "2", "3", "4"))
+ds3 <- nombres_columna(ds3, c("5","6"), c(1,2))
+ds3 <- nombres_columna(ds3, 9, 3)
+ds3
 ```
 
