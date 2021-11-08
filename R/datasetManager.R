@@ -85,3 +85,13 @@ nombres_columna <- function(ds, nombres, columnas = NULL){
   return(ds)
 }
 
+setMethod(f="print",
+          signature="Dataset",
+          definition=function(x) {
+            print(paste("Nombre del Dataset: ", x@name))
+            print(paste("Cantidad columnas: ", ncol(x@data)))
+            print(paste("Cantidad filas: ", nrow(x@data)))
+            print("Contenido del dataset:")
+            print(x@data)
+          })
+

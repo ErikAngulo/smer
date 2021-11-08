@@ -40,5 +40,7 @@ ds3 <- nombres_columna(ds3, c("1", "2", "3", "4"))
 ds3 <- nombres_columna(ds3, c("5","6"), c(1,2))
 ds3 <- nombres_columna(ds3, 9, 3)
 ds3
+
+print(ds3)
 ```
 

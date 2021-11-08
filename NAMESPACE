@@ -2,7 +2,8 @@ exportClasses(Dataset)
 export(dataset,
     leer_datos,
     guardar_datos,
-    nombres_columna)
+    nombres_columna,
+    print)
 importFrom("methods", "is", "new")
 importFrom("utils", "read.table", "write.csv")
 
