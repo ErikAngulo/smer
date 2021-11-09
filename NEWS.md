@@ -1,5 +1,16 @@
 #smer unreleased
 
+# smer 0.1.4 (2021-11-09)
+## Added
+
+- Documentación y funciones de ayuda (visibles con help() o ?nombre_funcion)
+
+## Changed
+
+- Formato de NEWS (ahora se puede visualizar en la ayuda del paquete)
+  Fichero NEWS vaciado, ver contenido en NEWS.md
+
+
 # smer 0.1.3 (2021-11-08)
 ## Added
 
