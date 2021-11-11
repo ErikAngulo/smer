@@ -1,0 +1,98 @@
+
+###### Cálculo de métricas para los atributos de un dataset #####
+
+#' Varianza del Dataset
+#' @description
+#' Calcula la varianza de cada columna de un \code{\linkS4class{Dataset}}.
+#' @param ds Objeto de tipo Dataset.
+#' @return Vector con la varianza correspondiente a cada columna.
+#' Si la columna de datos no es numérica, devolverá NA en su respectiva posición.
+# @export
+varianzas <- function(ds){
+  #suprressWarnings para que no imprima warning al poner un NA
+  suppressWarnings(result <- apply(ds@data, MARGIN = 2, FUN=var))
+  return(result)
+}
+
+#Calcula la entropía de cada columna
+entropy <- function (x){
+  count <- table(x)
+  H <- 0
+  for (elem in count){
+    prop <- (elem/length(x))
+    H <- H - prop * log2(prop)
+  }
+
+  return(H)
+}
+
+#calcula las entropías discretas
+entropyDiscretes <- function(df, normalizar=2){
+  H <- rep(NA, ncol(df))
+  clases <- lapply(df, typeof)
+  for (i in 1:length(clases)){
+    if (clases[i] == "character" || clases[i] == "integer"){
+      H[i] <- entropy(df[,i])
+      if (length(normalizar) == 1){
+        H[i] <- H[i] / log2(normalizar[1])
+      }
+      else{
+        H[i] <- H[i] / log2(normalizar[i])
+      }
+    }
+  }
+  return(H)
+}
+
+
+#' Entropia del Dataset
+#' @description
+#' Calcula la entropía de cada columna de un \code{\linkS4class{Dataset}},
+#' o de las columnas discretas.
+#' @param ds Objeto de tipo Dataset.
+#' @param discrete Logical. Por defecto es TRUE, y calculará la entropía de
+#' las columnas de tipo \code{character} e \code{integer}. Con valor FALSE,
+#' se calculará en todas las columnas.
+#' @param normalizar En este parámetro se indicará cuántos valores posibles
+#' puede contener el Dataset de cara a obtener la entropía normalizada.
+#' En caso de que cada columna tenga diferentes valores posibles,
+#' el valor de este parámetro podrá ser un vector de longitud número de columnas
+#' donde cada posición indique la cantidad de valores posibles.
+#' En caso de \code{discrete=TRUE}, en las posiciónes de columnas no discretas
+#' se podrá usar cualquier instancia (ej: -1, NaN).
+#' Se puede usar un único número que será aplicado a todas las columnas.
+#' Por defecto este parámetro tiene el valor 2, lo que significa que
+#' no se obtendrán entropías normalizadas. Para más información, ver Details.
+#' @details
+#' De cara a normalizar, si una columna solo dispone de un único valor,
+#' independientemente del valor del parámetro siempre se obtendra 0.
+#'
+#' En caso de tener dos valores diferentes, se usará el parámetro con valor 2 (defecto),
+#' y la entropía siempre estará normalizada (entre valores 0 y 1).
+#'
+#' Finalmente, en caso de tener más de dos valores diferentes se deberá especificar
+#' la cantidad de valores posibles si se desea normalizar (obtener valores entre 0 y 1).
+#'
+#' Internamente, la fórmula de la entropía está implementada con logaritmo en base 2,
+#' por ello cualquier columna que se desee normalizar que tenga más de 2 valores
+#' posibles se deberá indicar mediante el parámetro normalizar en la respectiva
+#' posición de la columna.
+#' @return Vector con la entropía correspondiente a cada columna.
+#' En caso de \code{discrete=TRUE}, el valor será \code{NA} en las columnas
+#' que no sean de tipo \code{character} e \code{integer}.
+# @export
+entropias <- function(ds, discrete = TRUE, normalizar = 2){
+  if (length(normalizar) != 1 && length(normalizar) != ncol(ds@data)){
+    stop("El parámetro 'normalizar' ha de ser un número o un vector de la misma
+         longitud que columnas tenga el Dataset")
+  }
+  if (discrete){
+    H <- entropyDiscretes(ds@data, normalizar)
+  }
+  else{
+    H <- apply(ds@data, MARGIN = 2, FUN=entropy)
+    H <- H / log2(normalizar)
+  }
+  names(H) <- names(ds@data)
+  return(H)
+}

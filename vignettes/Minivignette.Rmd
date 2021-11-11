@@ -44,3 +44,17 @@ ds3
 print(ds3)
 ```
 
+### Cálculo de métricas
+
+```{r}
+vars <- varianzas(ds3)
+print(vars)
+entr <- entropias(ds3)
+print(entr)
+entr <- entropias(ds3, discrete=FALSE)
+print(entr)
+entr <- entropias(ds3, discrete=TRUE,normalizar=c(6,8,6,2))
+print(entr)
+entr <- entropias(ds3, discrete=FALSE,normalizar=c(6,8,6,2))
+print(entr)
+```

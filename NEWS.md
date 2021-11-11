@@ -1,5 +1,12 @@
 #smer unreleased
 
+#smer 0.2.0 (2021-11-11)
+## Added
+
+- Cálculo de métricas para dataset: varianza y entropía
+- Documentación de las funciones
+
+
 # smer 0.1.4 (2021-11-09)
 ## Added
 

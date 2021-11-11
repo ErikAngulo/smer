@@ -4,6 +4,10 @@ export(dataset,
     guardar_datos,
     nombres_columna)
 exportMethods(print)
+export(varianzas,
+    entropias)
 importFrom("methods", "is", "new")
 importFrom("utils", "read.table", "write.csv")
+importFrom("stats", "var")
+
 
