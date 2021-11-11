@@ -1,5 +1,11 @@
 #smer unreleased
 
+#smer 0.3.0 (2021-11-12)
+## Added
+
+- Cálculo de métricas para dataset: área bajo la curva ROC
+
+
 #smer 0.2.0 (2021-11-11)
 ## Added
 

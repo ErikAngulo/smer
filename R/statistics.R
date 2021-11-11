@@ -83,8 +83,8 @@ entropyDiscretes <- function(df, normalizar=2){
 # @export
 entropias <- function(ds, discrete = TRUE, normalizar = 2){
   if (length(normalizar) != 1 && length(normalizar) != ncol(ds@data)){
-    stop("El parámetro 'normalizar' ha de ser un número o un vector de la misma
-         longitud que columnas tenga el Dataset")
+    stop(paste("El parámetro 'normalizar' ha de ser un número o un vector de la misma
+         longitud que columnas tenga el Dataset: ", ncol(ds@data)))
   }
   if (discrete){
     H <- entropyDiscretes(ds@data, normalizar)
@@ -95,4 +95,83 @@ entropias <- function(ds, discrete = TRUE, normalizar = 2){
   }
   names(H) <- names(ds@data)
   return(H)
+}
+
+#' Calcula la curva ROC y su área
+#'
+# @export
+areasroc <- function(ds, cols_valores, col_etiquetas){
+  if (col_etiquetas < 1 || col_etiquetas > ncol(ds@data) ||
+      any(cols_valores > ncol(ds@data)) || any(cols_valores < 1)){
+    stop(paste("Los índices de las columnas tienen que estar en el rango [1:",
+               ncol(ds@data), "] (número de columnas del Dataset)"))
+  }
+  if (typeof(ds@data[,col_etiquetas]) != "logical"){
+    stop("La columna señalada como etiqueta no es de tipo 'logical'")
+  }
+  #1 mirar que no haya logical
+  #2 mirar que no haya otro tipo de datos no numéricos
+  #(se hace unlist ya que los names de las columnas también comprueba)
+  #3 mirar que no haya factores entre los datos numéricos
+  if (any(sapply(ds@data[,cols_valores], typeof) == "logical") ||
+      !is.numeric(unlist(ds@data[,cols_valores])) ||
+      any(sapply(ds@data[,cols_valores], is.factor))){
+    stop("Alguna de las columnas señaladas como valores no son numéricas")
+  }
+
+  areas <- rep(0, length(cols_valores))
+  for (i in 1:length(cols_valores)){
+    result <- arearoc(ds, cols_valores[i], col_etiquetas)
+    areas[i] <- result$area
+  }
+  names(areas) <- names(ds@data[cols_valores])
+
+  return(areas)
+
+}
+
+
+arearoc <- function(ds, col_valores, col_etiquetas){
+  #if (col_valores < 1 || col_etiquetas < 1 || col_valores > ncol(ds@data)|| col_etiquetas > ncol(ds@data)){
+  #  stop(paste("Los índices de las columnas tienen que estar en el rango [1:",
+  #            ncol(ds@data), "] (número de columnas del Dataset)"))
+  #}
+  df <- data.frame(variable=ds@data[,col_valores],
+                   etiqueta=ds@data[,col_etiquetas])
+
+  dfOrden <- df[order(df$variable),]
+
+  ratios <- apply(dfOrden[c('variable')], 1, function(x) getRatios(dfOrden, x[1]))
+
+  TPRarray <- sapply(ratios, "[[", 5)
+  FPRarray <- sapply(ratios, "[[", 6)
+
+  area <- integraOptimizada(FPRarray, TPRarray)
+  return(list(area=area, TPRarray=TPRarray, FPRarray=FPRarray))
+}
+
+
+getRatios <- function(df, cortar){
+  #cogemos los indices de las filas que valor sea menor a corte,
+  #despues, nos quedamos con el vector de etiquetas de esas filas
+  #y dividimos en los elementos que vamos a predecir como true y false
+  #(segun si se ha cumplido que los valores son menores a corte o no)
+  prediccion <- which(df[1] <= cortar)
+  predTrue <- df[prediccion, 2]
+  predFalse <- df[-prediccion, 2]
+
+  TP <- sum(predTrue)
+  FP <- length(predTrue) - TP
+  FN <- sum(predFalse)
+  TN <- length(predFalse) - FN
+
+  TPR <- TP / (TP + FN)
+  FPR <- FP / (FP + TN)
+  return(list(TP, FP, FN, TN, TPR, FPR))
+}
+
+integraOptimizada <- function(x, y) {
+  delta.x <- diff(x)
+  mean.y  <- rowMeans(cbind(y[-1], y[-length(y)]))
+  return(sum(delta.x * mean.y))
 }

@@ -58,3 +58,14 @@ print(entr)
 entr <- entropias(ds3, discrete=FALSE,normalizar=c(6,8,6,2))
 print(entr)
 ```
+
+```{r}
+areasroc(ds3, c(2,2), 4)
+#areasroc(ds3, c(4,2), 4) #boolean no
+#areasroc(ds3, c(1,2), 4) #factor no
+```
+```{r}
+ds4 <- leer_datos('datos/LecturaCSV_R.csv', encabezado = TRUE, factorizar=2)
+areasroc(ds4, c(3,2), 4) #string no
+```
+

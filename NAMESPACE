@@ -5,7 +5,8 @@ export(dataset,
     nombres_columna)
 exportMethods(print)
 export(varianzas,
-    entropias)
+    entropias,
+    areasroc)
 importFrom("methods", "is", "new")
 importFrom("utils", "read.table", "write.csv")
 importFrom("stats", "var")
