@@ -37,14 +37,11 @@ o de las columnas discretas.
 De cara a normalizar, si una columna solo dispone de un único valor,
 independientemente del valor del parámetro siempre se obtendra 0.
 
-
 En caso de tener dos valores diferentes, se usará el parámetro con valor 2 (defecto),
 y la entropía siempre estará normalizada (entre valores 0 y 1).
 
-
 Finalmente, en caso de tener más de dos valores diferentes se deberá especificar
 la cantidad de valores posibles si se desea normalizar (obtener valores entre 0 y 1).
-
 
 Internamente, la fórmula de la entropía está implementada con logaritmo en base 2,
 por ello cualquier columna que se desee normalizar que tenga más de 2 valores

@@ -6,9 +6,11 @@ export(dataset,
 exportMethods(print)
 export(varianzas,
     entropias,
-    areasroc)
+    areasroc,
+    correlaciones,
+    infmutuas)
 importFrom("methods", "is", "new")
 importFrom("utils", "read.table", "write.csv")
-importFrom("stats", "var")
+importFrom("stats", "var", "cor")
 
 

@@ -66,6 +66,19 @@ areasroc(ds3, c(2,2), 4)
 ```
 ```{r}
 ds4 <- leer_datos('datos/LecturaCSV_R.csv', encabezado = TRUE, factorizar=2)
-areasroc(ds4, c(3,2), 4) #string no
+#areasroc(ds4, c(3,2), 4) #string no
+```
+```{r}
+co <- correlaciones(ds3)
+co
+co <- correlaciones(ds4)
+co
+```
+```{r}
+infmutuas(ds3)
+infmutuas(ds3, logical = TRUE)
+```
+```{r}
+infmutuas(ds4, logical=TRUE)
 ```
 

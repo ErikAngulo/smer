@@ -97,8 +97,43 @@ entropias <- function(ds, discrete = TRUE, normalizar = 2){
   return(H)
 }
 
+
+
+
 #' Calcula la curva ROC y su área
+#' @description
+#' Dada una columna de valores y una columna de etiquetas de un \code{\linkS4class{Dataset}},
+#' por cada valor calculará el TPR y FPR para después obtener el área bajo la curva ROC.
+#' Más info en apartado Details.
+#' @details
+#' El algoritmo hace lo siguiente:
 #'
+#' 1- Ordena ambas columnas en orden ascendente en base a la columna de valores.
+#' (No modifica el Dataset original)
+#'
+#' 2- Por cada valor, se presupone que todos los anteriores a ese valor se han
+#' predicho como TRUE, y los siguientes como FALSE.
+#'
+#' 3- Se comparan las etiquetas predichas con las originales de la columna
+#' de etiquetas y se calculan los ratios 'True Positive', 'False Positive',
+#' 'True Negative', 'False Negative', 'True Positive Rate' y 'False Positive Rate'.
+#'
+#' 4- Finalmente, se obtiene la función/curva entre 'False Positive Rate' y
+#' 'True Positive Rate' y el área que quede bajo la curva será devuelto por
+#' esta función.
+#'
+#' Es posible pasar varias columnas como etiquetas a la vez en una misma llamada
+#' a esta función, en cuyo caso se obtendrá el área obtenida al aplicar el
+#' algoritmo anterior a cada columna.
+#'
+#' Las columnas de valores han de ser numéricas (sin ser categóricas, clase factor),
+#' y la columna de etiquetas de clase logical, es decir con TRUE y FALSE como valores.
+#' @param ds Objeto de tipo Dataset
+#' @param cols_valores Índice o vector de índices que indican columnas del Dataset.
+#' Las columnas tienen que ser numéricas (sin ser categóricas).
+#' @param col_etiquetas Índice que indica una columna de tipo logical del Dataset.
+#' @return Área bajo la curva (por cada columna indicada en cols_valores).
+#' Obtener más información sobre el procedimiento en apartado Details.
 # @export
 areasroc <- function(ds, cols_valores, col_etiquetas){
   if (col_etiquetas < 1 || col_etiquetas > ncol(ds@data) ||
@@ -174,4 +209,46 @@ integraOptimizada <- function(x, y) {
   delta.x <- diff(x)
   mean.y  <- rowMeans(cbind(y[-1], y[-length(y)]))
   return(sum(delta.x * mean.y))
+}
+
+
+#' Calcula las correlaciones
+#' @description
+#' Calcula las correlaciones entre pares de variables (columnas) de un \code{\linkS4class{Dataset}}.
+#' Se seleccionarán las columnas númericas automáticamente
+#' @param ds Objeto de tipo Dataset
+#' @return Matriz de correlaciones
+# @export
+correlaciones <- function(ds){
+  num <- unlist(lapply(ds@data, is.numeric))
+  return(data.frame (cor(ds@data[num])))
+}
+
+#' Calcula las informaciones mutuas
+#' @description
+#' Calcula las informaciones mutuas entre pares de variables (columnas) de un \code{\linkS4class{Dataset}}.
+#' Se seleccionarán las columnas de valores numéricos discretos y factores
+#' automáticamente.
+#' @param ds Objeto de tipo Dataset
+#' @param logical Variable para controlar si se tendrán en cuenta también
+#' las columnas del Dataset que sean de tipo logical. Por defecto, FALSE (no
+#' se tendrán en cuenta). Si se fija en TRUE, se considerarán.
+#' @return Matriz de correlaciones
+# @export
+infmutuas <- function(ds, logical = FALSE){
+  if(!requireNamespace("infotheo")){
+    stop("La función 'infmutuas' requiere la instalación del
+         paquete 'infotheo'. Instala este paquete y
+         vuelve a ejecutar la función")
+  }
+  #https://search.r-project.org/CRAN/refmans/infotheo/html/mutinformation.html
+  int <- unlist(lapply(ds@data, is.integer))
+  fac <- unlist(lapply(ds@data, is.factor))
+  or <- int | fac
+  if (logical){
+    log <- unlist(lapply(ds@data, is.logical))
+    or <- or | log
+  }
+  result <- infotheo::mutinformation(ds@data[or])
+  return(result)
 }

@@ -1,5 +1,12 @@
 #smer unreleased
 
+#smer 0.3.1 (2021-11-14)
+## Added
+
+- Cálculo de métricas para dataset: correlaciones e información mutua
+- Documentación de funciones
+
+
 #smer 0.3.0 (2021-11-12)
 ## Added
 
