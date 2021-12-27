@@ -1,19 +1,30 @@
 #smer unreleased
 
-#smer 0.3.1 (2021-11-14)
+# smer 0.4.0 (2021-11-21)
+## Added
+
+- Discretización de variables por igual frecuencia, igual anchura y con tramos especificados.
+- Documentación de funciones
+
+## Fixed 
+
+- Mostrar correctamente changelog desde ayuda del paquete
+
+
+# smer 0.3.1 (2021-11-14)
 ## Added
 
 - Cálculo de métricas para dataset: correlaciones e información mutua
 - Documentación de funciones
 
 
-#smer 0.3.0 (2021-11-12)
+# smer 0.3.0 (2021-11-12)
 ## Added
 
 - Cálculo de métricas para dataset: área bajo la curva ROC
 
 
-#smer 0.2.0 (2021-11-11)
+# smer 0.2.0 (2021-11-11)
 ## Added
 
 - Cálculo de métricas para dataset: varianza y entropía

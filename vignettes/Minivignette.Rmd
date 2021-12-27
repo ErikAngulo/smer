@@ -82,3 +82,11 @@ infmutuas(ds3, logical = TRUE)
 infmutuas(ds4, logical=TRUE)
 ```
 
+### Discretización
+
+```{r}
+discretizar(ds3, 'anchura', 3, 2)
+discretizar(ds3, 'frecuencia', 3, 2)
+discretizar(ds3, 'manual', c(3,6,8), 2)
+```
+
