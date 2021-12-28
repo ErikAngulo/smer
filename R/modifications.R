@@ -150,14 +150,21 @@ verificarColumnaNumerica <- function(ds, columnas){
 #' @param ds Objeto de tipo Dataset.
 #' @param columnas El índice de columnas a las que se aplicará la normalización.
 #' Las columnas deberán ser numéricas y no deberán estar ya factorizadas.
+#' Si no se especifica ningún valor por defecto se aplicará la estandarización
+#' a todas las columnas numéricas.
 #' @return Un nuevo \code{\linkS4class{Dataset}} con las columnas proporcionadas
 #' normalizadas
 #' @seealso \code{\link{estandarizar}}
 # @export
-normalizar <- function(ds, columnas){
-  mensaje <- verificarColumnaNumerica(ds, columnas) #si no son numéricas, parar programa
-  if (!is.null(mensaje)){
-    stop(mensaje)
+normalizar <- function(ds, columnas = NULL){
+  if (is.null(columnas)){
+    columnas <- sapply(ds@data, class) == "numeric"
+  }
+  else{
+    mensaje <- verificarColumnaNumerica(ds, columnas) #si no son numéricas, parar programa
+    if (!is.null(mensaje)){
+      stop(mensaje)
+    }
   }
   norm_df <- ds@data
 
@@ -184,14 +191,21 @@ norm <- function(x){
 #' @param ds Objeto de tipo Dataset.
 #' @param columnas El índice de columnas a las que se aplicará la estandarización.
 #' Las columnas deberán ser numéricas y no deberán estar ya factorizadas.
+#' Si no se especifica ningún valor por defecto se aplicará la estandarización
+#' a todas las columnas numéricas.
 #' @return Un nuevo \code{\linkS4class{Dataset}} con las columnas proporcionadas
 #' estandarizadas
 #' @seealso \code{\link{normalizar}}
 # @export
-estandarizar <- function(ds, columnas){
-  mensaje <- verificarColumnaNumerica(ds, columnas) #si no son numéricas, parar programa
-  if (!is.null(mensaje)){
-    stop(mensaje)
+estandarizar <- function(ds, columnas=NULL){
+  if (is.null(columnas)){
+    columnas <- sapply(ds@data, class) == "numeric"
+  }
+  else{
+    mensaje <- verificarColumnaNumerica(ds, columnas) #si no son numéricas, parar programa
+    if (!is.null(mensaje)){
+      stop(mensaje)
+    }
   }
   est_df <- ds@data
 
