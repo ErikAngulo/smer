@@ -25,18 +25,9 @@
 #' discretizadas y factorizadas.
 # @export
 discretizar <- function(ds, metodo, puntos_corte, columnas){
-  if (any(columnas > ncol(ds@data)) || any(columnas < 1)){
-    stop(paste("Los índices de las columnas tienen que estar en el rango [1:",
-               ncol(ds@data), "] (número de columnas del Dataset)"))
-  }
-  #1 mirar que no haya logical
-  #2 mirar que no haya otro tipo de datos no numéricos
-  #(se hace unlist ya que los names de las columnas también comprueba)
-  #3 mirar que no haya factores entre los datos numéricos
-  if (any(sapply(ds@data[,columnas], typeof) == "logical") ||
-      !is.numeric(unlist(ds@data[,columnas])) ||
-      any(sapply(ds@data[,columnas], is.factor))){
-    stop("Alguna de las columnas señaladas como valores no son numéricas")
+  mensaje <- verificarColumnaNumerica(ds, columnas) #si no son numéricas, parar programa
+  if (!is.null(mensaje)){
+    stop(mensaje)
   }
 
   if (!is.numeric(puntos_corte)){
@@ -130,4 +121,34 @@ discretizeEF <- function (x, num.bins) {
   cut.points <- x[orderedIndeX[cut.index]]
 
   return(cut.points)
+}
+
+verificarColumnaNumerica <- function(ds, columnas){
+  if (any(columnas > ncol(ds@data)) || any(columnas < 1)){
+    return(paste("Los índices de las columnas tienen que estar en el rango [1:",
+               ncol(ds@data), "] (número de columnas del Dataset)"))
+  }
+  #1 mirar que no haya logical
+  #2 mirar que no haya otro tipo de datos no numéricos
+  #(se hace unlist ya que los names de las columnas también comprueba)
+  #3 mirar que no haya factores entre los datos numéricos
+  if (any(sapply(ds@data[,columnas], typeof) == "logical") ||
+      !is.numeric(unlist(ds@data[,columnas])) ||
+      any(sapply(ds@data[,columnas], is.factor))){
+    return("Alguna de las columnas señaladas no son numéricas")
+  }
+  return(NULL)
+}
+
+
+##### Normalización #####
+
+normalizar <- function(ds, columnas){
+
+}
+
+##### Estandarización #####
+
+estandarizar <- function(ds, columnas){
+
 }
