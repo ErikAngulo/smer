@@ -90,3 +90,9 @@ discretizar(ds3, 'frecuencia', 3, 2)
 discretizar(ds3, 'manual', c(3,6,8), 2)
 ```
 
+### Normalización y estandarización
+
+```{r}
+normalizar(ds3, 2)
+estandarizar(ds3, 2)
+```

@@ -9,9 +9,11 @@ export(varianzas,
     areasroc,
     correlaciones,
     infmutuas)
-export(discretizar)
+export(discretizar,
+       normalizar,
+       estandarizar)
 importFrom("methods", "is", "new")
 importFrom("utils", "read.table", "write.csv")
-importFrom("stats", "var", "cor")
+importFrom("stats", "var", "cor", "sd")
 
 

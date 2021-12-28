@@ -143,12 +143,68 @@ verificarColumnaNumerica <- function(ds, columnas){
 
 ##### Normalización #####
 
+#' Normalización de variables
+#' @description
+#' Normaliza las columnas señaladas de un \code{\linkS4class{Dataset}}.
+#' Los valores estarán en el rango de entre 0 y 1 incluídos.
+#' @param ds Objeto de tipo Dataset.
+#' @param columnas El índice de columnas a las que se aplicará la normalización.
+#' Las columnas deberán ser numéricas y no deberán estar ya factorizadas.
+#' @return Un nuevo \code{\linkS4class{Dataset}} con las columnas proporcionadas
+#' normalizadas
+#' @seealso \code{\link{estandarizar}}
+# @export
 normalizar <- function(ds, columnas){
+  mensaje <- verificarColumnaNumerica(ds, columnas) #si no son numéricas, parar programa
+  if (!is.null(mensaje)){
+    stop(mensaje)
+  }
+  norm_df <- ds@data
 
+  norm_df[columnas] <- lapply(ds@data[columnas], function(x) norm(x))
+  masnombre <- '_normalized'
+
+  nds <- dataset(norm_df, id=paste(ds@name, masnombre))
+  return(nds)
+}
+
+norm <- function(x){
+  minimo <- min(x)
+  maximo <- max(x)
+  n <- (x - minimo) / (maximo - minimo)
+  return(n)
 }
 
 ##### Estandarización #####
 
+#' Estandarización de variables
+#' @description
+#' Estandariza las columnas señaladas de un \code{\linkS4class{Dataset}}.
+#' Los valores seguirán una distribución normal con media 0 y desviación estandar 1.
+#' @param ds Objeto de tipo Dataset.
+#' @param columnas El índice de columnas a las que se aplicará la estandarización.
+#' Las columnas deberán ser numéricas y no deberán estar ya factorizadas.
+#' @return Un nuevo \code{\linkS4class{Dataset}} con las columnas proporcionadas
+#' estandarizadas
+#' @seealso \code{\link{normalizar}}
+# @export
 estandarizar <- function(ds, columnas){
+  mensaje <- verificarColumnaNumerica(ds, columnas) #si no son numéricas, parar programa
+  if (!is.null(mensaje)){
+    stop(mensaje)
+  }
+  est_df <- ds@data
 
+  est_df[columnas] <- lapply(ds@data[columnas], function(x) est(x))
+  masnombre <- '_standarized'
+
+  nds <- dataset(est_df, id=paste(ds@name, masnombre))
+  return(nds)
+}
+
+est <- function(x){
+  media <- mean(x)
+  desviacion <- sd(x)
+  e <- (x-media) / desviacion
+  return(e)
 }

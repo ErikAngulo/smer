@@ -1,5 +1,13 @@
 #smer unreleased
 
+# smer 0.4.1 (2021-11-28)
+## Added
+
+- Normalización de variables
+- Estandarización de variables
+- Documentación de funciones
+
+
 # smer 0.4.0 (2021-11-21)
 ## Added
 
