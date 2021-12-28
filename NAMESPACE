@@ -11,7 +11,8 @@ export(varianzas,
     infmutuas)
 export(discretizar,
        normalizar,
-       estandarizar)
+       estandarizar,
+       filtrar)
 importFrom("methods", "is", "new")
 importFrom("utils", "read.table", "write.csv")
 importFrom("stats", "var", "cor", "sd")

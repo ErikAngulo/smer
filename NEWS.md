@@ -1,5 +1,12 @@
 #smer unreleased
 
+# smer 0.4.2 (2021-12-05)
+## Added
+
+- Herramienta de filtrado para dataset: obtener filas que cumplan condición en una columna
+- Documentación de funciones
+
+
 # smer 0.4.1 (2021-11-28)
 ## Added
 

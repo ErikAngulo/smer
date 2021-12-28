@@ -96,3 +96,14 @@ discretizar(ds3, 'manual', c(3,6,8), 2)
 normalizar(ds3, 2)
 estandarizar(ds3, 2)
 ```
+
+### Filtrado
+
+```{r}
+filtrar(ds3, 1, function(x) x=="5")
+filtrar(ds3, 3, function(x) x == "Paula")
+filtrar(ds3, 3, function(x) x == "Nerea")
+print(filtrar(ds3, 2, function(x) x > 4))
+#filtrar(ds3, 3, function(x) x == "Alex")
+```
+

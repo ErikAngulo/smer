@@ -208,3 +208,59 @@ est <- function(x){
   e <- (x-media) / desviacion
   return(e)
 }
+
+
+##### Filtrado #####
+
+#' Filtrar elementos de un Dataset
+#' @description
+#' Selecciona las filas de un \code{\linkS4class{Dataset}} que cumplen un criterio en una columna.
+#' Este criterio se especificará a través de una función
+#' @param ds Objeto de tipo Dataset.
+#' @param columna El índice de columna al que se aplicará la función de filtrado.
+#' @param funcion Función de filtrado. Deberá constar de un único argumento de entrada
+#' que será un vector, y su salida (return) deberá ser un vector de TRUE o FALSE si se
+#' cumple el criterio de la función por cada elemento del vector de entrada.
+#' @return Un nuevo \code{\linkS4class{Dataset}} con las filas filtradas.
+#' @examples
+#' \dontrun{
+#' filtrar(ds, 3, function(x) x == "Radio")
+#' filtrar(ds, 3, function(x) x == "Radio" || x == "Television")
+#' filtrar(ds, 1, function(x) x > 4.7)
+#' filtrar(ds, 4, function(x) x < 3)
+#' filtrar(ds, 2, function(x) x == TRUE)
+#' }
+# @export
+filtrar <- function(ds, columna, funcion){
+  if (length(columna) > 1){
+    stop("Solo se puede seleccionar una columna de filtrado")
+  }
+  if (any(columna > ncol(ds@data)) || any(columna < 1)){
+    stop(paste("El índices de la columnas tienen que estar en el rango [1:",
+                 ncol(ds@data), "] (número de columnas del Dataset)"))
+  }
+  filt_df <- ds@data
+  nombre <- ds@name
+
+  filas <- which(funcion(filt_df[columna]) == TRUE)
+
+  filt_df <- filt_df[filas, ]
+
+  if (length(filas)==0){
+    stop("No hay ningún valor en la columna que cumpla la función especificada.
+         No se han obtenido filas. Filtrado no exitoso.")
+  }
+  else if (length(filas) == 1){
+    warning("Solo hay una única fila después del proceso de filtrado que cumple las condiciones.
+            No se puede crear objeto de tipo Dataset. Se devolverán los valores como dataframe")
+    return(filt_df[1,])
+  }
+
+  if (!grepl("_filtrado", ds@name)){
+    nombre <- paste(nombre, "_filtrado")
+  }
+
+  nds <- dataset(filt_df, id=nombre)
+  return(nds)
+
+}
