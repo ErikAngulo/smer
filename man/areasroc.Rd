@@ -4,7 +4,7 @@
 \alias{areasroc}
 \title{Calcula la curva ROC y su área}
 \usage{
-areasroc(ds, cols_valores, col_etiquetas)
+areasroc(ds, cols_valores, col_etiquetas, plot = FALSE)
 }
 \arguments{
 \item{ds}{Objeto de tipo Dataset}
@@ -13,6 +13,9 @@ areasroc(ds, cols_valores, col_etiquetas)
 Las columnas tienen que ser numéricas (sin ser categóricas).}
 
 \item{col_etiquetas}{Índice que indica una columna de tipo logical del Dataset.}
+
+\item{plot}{Logical. Se mostrará gráficamente la curva ROC en caso de TRUE.
+Se mostrará coloreado la diferencia respecto a la diagonal (área de 0.5)}
 }
 \value{
 Área bajo la curva (por cada columna indicada en cols_valores).

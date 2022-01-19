@@ -4,7 +4,7 @@
 \alias{infmutuas}
 \title{Calcula las informaciones mutuas}
 \usage{
-infmutuas(ds, logical = FALSE)
+infmutuas(ds, logical = FALSE, plot = FALSE)
 }
 \arguments{
 \item{ds}{Objeto de tipo Dataset}
@@ -12,6 +12,8 @@ infmutuas(ds, logical = FALSE)
 \item{logical}{Variable para controlar si se tendrán en cuenta también
 las columnas del Dataset que sean de tipo logical. Por defecto, FALSE (no
 se tendrán en cuenta). Si se fija en TRUE, se considerarán.}
+
+\item{plot}{Logical. Fijado en TRUE, mostrará las informaciones mutuas en un gráfico}
 }
 \value{
 Matriz de correlaciones
@@ -20,4 +22,7 @@ Matriz de correlaciones
 Calcula las informaciones mutuas entre pares de variables (columnas) de un \code{\linkS4class{Dataset}}.
 Se seleccionarán las columnas de valores numéricos discretos y factores
 automáticamente.
+}
+\seealso{
+\code{correlaciones}
 }

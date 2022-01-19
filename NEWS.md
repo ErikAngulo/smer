@@ -1,5 +1,20 @@
 #smer unreleased
 
+# smer 0.5.0 (2021-12-12)
+## Added
+
+- Gráfico de la curva ROC
+- Gráfico de las entropías
+- Gráfico de las correlaciones
+- Gráfico de las informaciones mutuas
+- Función para visualizar los Boxplot de cada columna gráficamente
+
+## Changed
+
+- Estandarización y normalización por defecto se aplicará a todas las columnas numéricas
+- Funciones de areasroc, entropias y correlaciones disponen de un atributo nuevo para indicar si se desean obtener gráficos. Actualizada documentación
+
+
 # smer 0.4.2 (2021-12-05)
 ## Added
 

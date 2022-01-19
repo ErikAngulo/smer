@@ -4,10 +4,12 @@
 \alias{correlaciones}
 \title{Calcula las correlaciones}
 \usage{
-correlaciones(ds)
+correlaciones(ds, plot = FALSE)
 }
 \arguments{
 \item{ds}{Objeto de tipo Dataset}
+
+\item{plot}{Logical. Fijado en TRUE, mostrará las correlaciones en un gráfico}
 }
 \value{
 Matriz de correlaciones
@@ -15,4 +17,7 @@ Matriz de correlaciones
 \description{
 Calcula las correlaciones entre pares de variables (columnas) de un \code{\linkS4class{Dataset}}.
 Se seleccionarán las columnas númericas automáticamente
+}
+\seealso{
+\code{infmutuas}
 }

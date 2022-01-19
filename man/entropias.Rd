@@ -4,7 +4,7 @@
 \alias{entropias}
 \title{Entropia del Dataset}
 \usage{
-entropias(ds, discrete = TRUE, normalizar = 2)
+entropias(ds, discrete = TRUE, normalizar = 2, plot = FALSE)
 }
 \arguments{
 \item{ds}{Objeto de tipo Dataset.}
@@ -23,6 +23,8 @@ se podrá usar cualquier instancia (ej: -1, NaN).
 Se puede usar un único número que será aplicado a todas las columnas.
 Por defecto este parámetro tiene el valor 2, lo que significa que
 no se obtendrán entropías normalizadas. Para más información, ver Details.}
+
+\item{plot}{Logical. Mostrar la entropía de las columnas gráficamente.}
 }
 \value{
 Vector con la entropía correspondiente a cada columna.

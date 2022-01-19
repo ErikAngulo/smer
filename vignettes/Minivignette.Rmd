@@ -107,3 +107,46 @@ print(filtrar(ds3, 2, function(x) x > 4))
 #filtrar(ds3, 3, function(x) x == "Alex")
 ```
 
+### Gráficos
+
+```{r}
+areasroc(ds3, 2, 4, plot=TRUE)
+```
+
+```{r}
+valoresTrue <- rnorm(100, mean=30, sd=20)
+valoresFalse <- rnorm(100, mean=70, sd=20)
+
+etiquetaTrue <- rep(TRUE, 100)
+etiquetaFalse <- rep(FALSE, 100)
+
+rocData <- data.frame(variable=c(valoresTrue, valoresFalse), 
+                      etiqueta=c(etiquetaTrue, etiquetaFalse))
+dsRoc <- dataset(rocData)
+areasroc(dsRoc, 1, 2, plot=TRUE)
+```
+
+
+```{r}
+entropias(ds3, discrete=TRUE,normalizar=c(6,8,6,2), plot=TRUE)
+```
+
+```{r}
+df2 <- data.frame(first=c(3.2, 5.6, 7.1, 0.9, 8.5),
+                 second=c(4.4, 3.1, 1.2, 8.5, 6.3),
+                 third=c(4.7, 4.9, 5.3, 1.4, 2.8),
+                 fourth=c(0.4, 9.7, 8.6, 0.3, 8.5),
+                 fifth=c(3.1, 2.6, 9.8, 7.3, 4.0))
+ds5 <- dataset(df2)
+correlaciones(ds5, plot=TRUE)
+```
+
+```{r}
+infmutuas(ds3, logical=TRUE, plot=TRUE)
+```
+
+
+```{r}
+graficoBoxplot(ds5)
+```
+

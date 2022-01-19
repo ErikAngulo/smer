@@ -63,6 +63,7 @@ entropyDiscretes <- function(df, normalizar=2){
 #' Se puede usar un único número que será aplicado a todas las columnas.
 #' Por defecto este parámetro tiene el valor 2, lo que significa que
 #' no se obtendrán entropías normalizadas. Para más información, ver Details.
+#' @param plot Logical. Mostrar la entropía de las columnas gráficamente.
 #' @details
 #' De cara a normalizar, si una columna solo dispone de un único valor,
 #' independientemente del valor del parámetro siempre se obtendra 0.
@@ -81,7 +82,7 @@ entropyDiscretes <- function(df, normalizar=2){
 #' En caso de \code{discrete=TRUE}, el valor será \code{NA} en las columnas
 #' que no sean de tipo \code{character} e \code{integer}.
 # @export
-entropias <- function(ds, discrete = TRUE, normalizar = 2){
+entropias <- function(ds, discrete = TRUE, normalizar = 2, plot=FALSE){
   if (length(normalizar) != 1 && length(normalizar) != ncol(ds@data)){
     stop(paste("El parámetro 'normalizar' ha de ser un número o un vector de la misma
          longitud que columnas tenga el Dataset: ", ncol(ds@data)))
@@ -94,6 +95,9 @@ entropias <- function(ds, discrete = TRUE, normalizar = 2){
     H <- H / log2(normalizar)
   }
   names(H) <- names(ds@data)
+  if (plot==TRUE){
+    barplot(H, main="Entropías", xlab="Columnas del Dataset", ylab="Valor de la entropía")
+  }
   return(H)
 }
 
@@ -132,10 +136,12 @@ entropias <- function(ds, discrete = TRUE, normalizar = 2){
 #' @param cols_valores Índice o vector de índices que indican columnas del Dataset.
 #' Las columnas tienen que ser numéricas (sin ser categóricas).
 #' @param col_etiquetas Índice que indica una columna de tipo logical del Dataset.
+#' @param plot Logical. Se mostrará gráficamente la curva ROC en caso de TRUE.
+#' Se mostrará coloreado la diferencia respecto a la diagonal (área de 0.5)
 #' @return Área bajo la curva (por cada columna indicada en cols_valores).
 #' Obtener más información sobre el procedimiento en apartado Details.
 # @export
-areasroc <- function(ds, cols_valores, col_etiquetas){
+areasroc <- function(ds, cols_valores, col_etiquetas, plot=FALSE){
   if (col_etiquetas < 1 || col_etiquetas > ncol(ds@data) ||
       any(cols_valores > ncol(ds@data)) || any(cols_valores < 1)){
     stop(paste("Los índices de las columnas tienen que estar en el rango [1:",
@@ -158,6 +164,14 @@ areasroc <- function(ds, cols_valores, col_etiquetas){
   for (i in 1:length(cols_valores)){
     result <- arearoc(ds, cols_valores[i], col_etiquetas)
     areas[i] <- result$area
+
+    if (plot==TRUE){
+      area <- result$area
+      TPRarray <- result$TPRarray
+      FPRarray <- result$FPRarray
+      plot(FPRarray, TPRarray, type='l', main='Curva ROC', sub=paste('Área: ',area), xlab='FPR', ylab='TPR')
+      polygon(FPRarray,TPRarray, col="cadetblue3")
+    }
   }
   names(areas) <- names(ds@data[cols_valores])
 
@@ -217,11 +231,33 @@ integraOptimizada <- function(x, y) {
 #' Calcula las correlaciones entre pares de variables (columnas) de un \code{\linkS4class{Dataset}}.
 #' Se seleccionarán las columnas númericas automáticamente
 #' @param ds Objeto de tipo Dataset
+#' @param plot Logical. Fijado en TRUE, mostrará las correlaciones en un gráfico
 #' @return Matriz de correlaciones
+#' @seealso \code{infmutuas}
 # @export
-correlaciones <- function(ds){
+correlaciones <- function(ds, plot=FALSE){
   num <- unlist(lapply(ds@data, is.numeric))
-  return(data.frame (cor(ds@data[num])))
+  correlaciones <- cor(ds@data[num])
+  if (plot==TRUE){
+    if(!requireNamespace("reshape2") || !requireNamespace("ggplot2")){
+      stop("Para mostrar este gráfico es necesario tener instalados
+           los paquetes reshape2 y ggplot2")
+    }
+    else{
+      df3 <- reshape2::melt(correlaciones)
+      names(df3) <- c("Columna", "Fila", "Marginal")
+      cols.char <- c("Columna","Fila")
+      df3[cols.char] <- sapply(df3[cols.char],as.character)
+      g <- ggplot2::ggplot(df3, ggplot2::aes(x=Fila, y=Columna, fill=Marginal)) +
+        ggplot2::geom_tile() +
+        ggplot2::theme_bw() +
+        ggplot2::theme(panel.border = ggplot2::element_blank(),
+          panel.grid = ggplot2::element_blank(),
+          axis.ticks = ggplot2::element_blank())
+      plot(g)
+    }
+  }
+  return(data.frame (correlaciones))
 }
 
 #' Calcula las informaciones mutuas
@@ -233,9 +269,11 @@ correlaciones <- function(ds){
 #' @param logical Variable para controlar si se tendrán en cuenta también
 #' las columnas del Dataset que sean de tipo logical. Por defecto, FALSE (no
 #' se tendrán en cuenta). Si se fija en TRUE, se considerarán.
+#' @param plot Logical. Fijado en TRUE, mostrará las informaciones mutuas en un gráfico
+#' @seealso \code{correlaciones}
 #' @return Matriz de correlaciones
 # @export
-infmutuas <- function(ds, logical = FALSE){
+infmutuas <- function(ds, logical = FALSE, plot=FALSE){
   if(!requireNamespace("infotheo")){
     stop("La función 'infmutuas' requiere la instalación del
          paquete 'infotheo'. Instala este paquete y
@@ -250,5 +288,43 @@ infmutuas <- function(ds, logical = FALSE){
     or <- or | log
   }
   result <- infotheo::mutinformation(ds@data[or])
+
+  if (plot==TRUE){
+    if(!requireNamespace("reshape2") || !requireNamespace("ggplot2")){
+      stop("Para mostrar este gráfico es necesario tener instalados
+           los paquetes reshape2 y ggplot2")
+    }
+    else{
+      df3 <- reshape2::melt(result)
+      names(df3) <- c("Columna", "Fila", "Marginal")
+      cols.char <- c("Columna","Fila")
+      df3[cols.char] <- sapply(df3[cols.char],as.character)
+      g <- ggplot2::ggplot(df3, ggplot2::aes(x=Fila, y=Columna, fill=Marginal)) +
+        ggplot2::geom_tile() +
+        ggplot2::theme_bw() +
+        ggplot2::theme(panel.border = ggplot2::element_blank(),
+                       panel.grid = ggplot2::element_blank(),
+                       axis.ticks = ggplot2::element_blank())
+      plot(g)
+    }
+  }
   return(result)
 }
+
+#' Mostrar gráficamente Boxplot
+#' @description
+#' Se visualizará mediante un gráfico los boxplot correspondientes a cada columna.
+#' Se aplicará solo a las columnas numéricas, las no numéricas se omitiran
+#' automáticamente en el gráfico.
+#' @param ds Objeto de tipo Dataset
+# @export
+graficoBoxplot <- function(ds){
+  if(!requireNamespace("ggplot2")){
+    stop("Para mostrar este gráfico es necesario tener instalado
+           el paquete ggplot2")
+  }
+  g <- ggplot2::ggplot(stack(ds@data), ggplot2::aes(x = ind, y = values)) +
+    ggplot2::geom_boxplot()
+  plot(g)
+}
+

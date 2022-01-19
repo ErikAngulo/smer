@@ -8,7 +8,8 @@ export(varianzas,
     entropias,
     areasroc,
     correlaciones,
-    infmutuas)
+    infmutuas,
+    graficoBoxplot)
 export(discretizar,
        normalizar,
        estandarizar,
@@ -16,5 +17,6 @@ export(discretizar,
 importFrom("methods", "is", "new")
 importFrom("utils", "read.table", "write.csv")
 importFrom("stats", "var", "cor", "sd")
+importFrom("graphics", "plot", "polygon")
 
 

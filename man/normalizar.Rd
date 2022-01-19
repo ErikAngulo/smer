@@ -4,13 +4,15 @@
 \alias{normalizar}
 \title{Normalización de variables}
 \usage{
-normalizar(ds, columnas)
+normalizar(ds, columnas = NULL)
 }
 \arguments{
 \item{ds}{Objeto de tipo Dataset.}
 
 \item{columnas}{El índice de columnas a las que se aplicará la normalización.
-Las columnas deberán ser numéricas y no deberán estar ya factorizadas.}
+Las columnas deberán ser numéricas y no deberán estar ya factorizadas.
+Si no se especifica ningún valor por defecto se aplicará la estandarización
+a todas las columnas numéricas.}
 }
 \value{
 Un nuevo \code{\linkS4class{Dataset}} con las columnas proporcionadas
