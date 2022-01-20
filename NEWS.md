@@ -1,5 +1,18 @@
 #smer unreleased
 
+# smer 0.6.0 (2021-12-19)
+## Added 
+
+- Viñeta tutorial con ejemplos de uso del paquete
+
+## Changed
+
+- La entropía calculará automáticamente la cantidad de valores distintos para normalizar, y por defecto se normalizará
+
+## Fixed
+
+- Mostrar correctamente accesos directos a funciones en las ayudas
+
 # smer 0.5.0 (2021-12-12)
 ## Added
 

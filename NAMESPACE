@@ -15,8 +15,8 @@ export(discretizar,
        estandarizar,
        filtrar)
 importFrom("methods", "is", "new")
-importFrom("utils", "read.table", "write.csv")
+importFrom("utils", "read.table", "write.csv", "stack")
 importFrom("stats", "var", "cor", "sd")
-importFrom("graphics", "plot", "polygon")
+importFrom("graphics", "plot", "polygon", "barplot")
 
 

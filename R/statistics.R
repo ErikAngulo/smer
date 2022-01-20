@@ -53,40 +53,31 @@ entropyDiscretes <- function(df, normalizar=2){
 #' @param discrete Logical. Por defecto es TRUE, y calculará la entropía de
 #' las columnas de tipo \code{character} e \code{integer}. Con valor FALSE,
 #' se calculará en todas las columnas.
-#' @param normalizar En este parámetro se indicará cuántos valores posibles
-#' puede contener el Dataset de cara a obtener la entropía normalizada.
-#' En caso de que cada columna tenga diferentes valores posibles,
-#' el valor de este parámetro podrá ser un vector de longitud número de columnas
-#' donde cada posición indique la cantidad de valores posibles.
-#' En caso de \code{discrete=TRUE}, en las posiciónes de columnas no discretas
-#' se podrá usar cualquier instancia (ej: -1, NaN).
-#' Se puede usar un único número que será aplicado a todas las columnas.
-#' Por defecto este parámetro tiene el valor 2, lo que significa que
-#' no se obtendrán entropías normalizadas. Para más información, ver Details.
+#' @param norm Logical. Parametro para indicar si se desean obtener las entropías
+#' normalizadas o no. Por defecto, TRUE
 #' @param plot Logical. Mostrar la entropía de las columnas gráficamente.
 #' @details
 #' De cara a normalizar, si una columna solo dispone de un único valor,
 #' independientemente del valor del parámetro siempre se obtendra 0.
 #'
-#' En caso de tener dos valores diferentes, se usará el parámetro con valor 2 (defecto),
-#' y la entropía siempre estará normalizada (entre valores 0 y 1).
+#' Si contiene más valores y se normaliza,
+#' la entropía siempre estará entre valores 0 y 1.
 #'
-#' Finalmente, en caso de tener más de dos valores diferentes se deberá especificar
-#' la cantidad de valores posibles si se desea normalizar (obtener valores entre 0 y 1).
+#' Sin normalizar el valor de la entropía se considera como si tuviera
+#' 2 valores distintos. Por ello, se recomienda normalizar.
 #'
-#' Internamente, la fórmula de la entropía está implementada con logaritmo en base 2,
-#' por ello cualquier columna que se desee normalizar que tenga más de 2 valores
-#' posibles se deberá indicar mediante el parámetro normalizar en la respectiva
-#' posición de la columna.
 #' @return Vector con la entropía correspondiente a cada columna.
 #' En caso de \code{discrete=TRUE}, el valor será \code{NA} en las columnas
 #' que no sean de tipo \code{character} e \code{integer}.
 # @export
-entropias <- function(ds, discrete = TRUE, normalizar = 2, plot=FALSE){
-  if (length(normalizar) != 1 && length(normalizar) != ncol(ds@data)){
-    stop(paste("El parámetro 'normalizar' ha de ser un número o un vector de la misma
-         longitud que columnas tenga el Dataset: ", ncol(ds@data)))
+entropias <- function(ds, discrete = TRUE, norm = TRUE, plot=FALSE){
+  if (norm){
+    normalizar <- apply(ds@data, 2, function(x) return(length(unique(x))))
   }
+  else{
+    normalizar <- 2
+  }
+
   if (discrete){
     H <- entropyDiscretes(ds@data, normalizar)
   }
@@ -233,7 +224,7 @@ integraOptimizada <- function(x, y) {
 #' @param ds Objeto de tipo Dataset
 #' @param plot Logical. Fijado en TRUE, mostrará las correlaciones en un gráfico
 #' @return Matriz de correlaciones
-#' @seealso \code{infmutuas}
+#' @seealso \code{\link{infmutuas}}
 # @export
 correlaciones <- function(ds, plot=FALSE){
   num <- unlist(lapply(ds@data, is.numeric))
@@ -270,7 +261,7 @@ correlaciones <- function(ds, plot=FALSE){
 #' las columnas del Dataset que sean de tipo logical. Por defecto, FALSE (no
 #' se tendrán en cuenta). Si se fija en TRUE, se considerarán.
 #' @param plot Logical. Fijado en TRUE, mostrará las informaciones mutuas en un gráfico
-#' @seealso \code{correlaciones}
+#' @seealso \code{\link{correlaciones}}
 #' @return Matriz de correlaciones
 # @export
 infmutuas <- function(ds, logical = FALSE, plot=FALSE){

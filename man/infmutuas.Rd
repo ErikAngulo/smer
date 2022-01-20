@@ -24,5 +24,5 @@ Se seleccionarán las columnas de valores numéricos discretos y factores
 automáticamente.
 }
 \seealso{
-\code{correlaciones}
+\code{\link{correlaciones}}
 }

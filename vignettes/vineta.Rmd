@@ -1,0 +1,260 @@
+---
+title: "Uso del paquete smer"
+author: "Erik"
+date: "`r Sys.Date()`"
+output: pdf_document
+vignette: |
+  %\VignetteIndexEntry{Tutorial y uso del paquete smer}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Instalación
+
+Esta es la guía de uso del paquete 'smer'. Está alojado en "github.com/erikangulo/smer"
+
+Este paquete se puede instalar fácilmente a través de la librería devtools, desde Github:
+
+```{r}
+#devtools::install_github("erikangulo/smer")
+```
+
+También se puede instalar a través del código fuente usando la consola de R.
+
+Este paquete tiene dependencias únicamente para ciertas funciones concretas listadas a continuación. El paquete puede operar correctamente sin ellas excepto para las funciones mencionadas e indicará al usuario al ejecutar cada programa si necesita alguna dependencia.
+
+* knitr: viñetas
+* rmarkdown: viñetas
+* infotheo: información mutua
+* reshape2: gráficos
+* ggplot2: gráficos
+
+Cargamos el paquete
+
+```{r}
+library(smer)
+```
+
+# Uso
+
+El objetivo de este paquete es facilitar la aplicación de cálculos y estadísticos en datos a usuarios que dispongan de poca experiencia en el ámbito de la programación. También es adecuado para conseguir los resultados deseados automáticamente en pocas líneas de código sin necesidad de programar nada. Entre las funciones disponibles, se encuentran la lectura y escritura de datasets, cálculo de la varianza, curva ROC, discretización, normalización y estandarización de variables, cálculo de la correlación, cálculo de la entropía y distintos gráficos que representen los resultados.
+
+Se puede consultar información y ayuda ejecutando '?smer' en la consola. Ahí podremos observar la ayuda de todas las funciones disponibles. Recomendamos encarecidamente leer la ayuda de las funciones a usar para entender qué realiza cada una, sus diferentes parámetros y pre-requisitos. A través de esta viñeta veremos un tutorial del paquete.
+
+```{r, results='hide'}
+?smer
+```
+
+Para observar las novedades del paquete lo podemos hacer de la siguiente manera:
+
+```{r, results='hide'}
+news(package = "smer")
+```
+
+# Gestión de Dataset
+
+En esta sección observaremos que son los Dataset y como podemos crearlos, cargarlos, guardarlos y visualizarlos.
+
+## Creación de Dataset
+
+Los Dataset son unas clases que funcionan como tablas, donde cada fila corresponde a instancias y las columnas a las variables. Cada variable será de un tipo, ya sea numérica, de factores, lógica o de caracteres. Los dataset, además de la tabla, tendrán un nombre.
+
+Empecemos observando como se crea un Dataset.
+
+Los Dataset se pueden crear con un vector, matriz o un dataframe. El único requisito que tiene es que ha de tener como mínimo dos filas y una columna (pues para elementos con una fila independientemente de las columnas ya podemos trabajar con un vector normal y corriente).
+
+A cada Dataset le podemos asignar un id o nombre, el cual se generará automáticamente con un número en caso de no especificarlo. Además, podemos decidir si factorizar alguna de sus columnas. De esta forma, aquellas que contengan menos valores distintos que el número indicado serán factorizadas.
+
+```{r}
+dfPrueba <- data.frame(c(3,3,5,8,9,5), c("A", "B", "D", "R", "S", "P"))
+dsPrueba<-dataset(dfPrueba, id="prueba")
+dsPrueba
+```
+
+Al crear el data.frame no se le han asignado nombres a las columnas, y por tanto al ver el objeto creado se ven nombres de columnas generados automáticamente y que no nos proporcionan ninguna información útil. Podemos cambiarles el nombre a las columnas deseadas o directamente a todas ellas.
+
+```{r}
+#cambiar nombres a las columnas deseadas
+dsPrueba <- nombres_columna(dsPrueba, c("Prueba"), c(1))
+dsPrueba
+#cambiar nombre a todas las columnas a la vez
+dsPrueba <- nombres_columna(dsPrueba, c("Numeros", "Letras"))
+dsPrueba
+```
+
+## Lectura y guardado de Dataset
+
+Además de poder crear Dataset con R, también podemos crearlos desde un fichero. De la misma manera, podemos guardar un Dataset como fichero.
+
+El guardado de ficheros está limitado a formato csv, pero la lectura puede ser de formato csv o derivados como tsv. Para ello es necesario indicar que separador usa (por defecto ",") y el caracter usado para los números decimales (por defecto "."). De igual manera podemos asignar un nombre al dataset creado y factorizarlo. Si el fichero dispone de encabezado, es decir, nombres asignados a cada columna como la primera instancia del fichero, se usarán como nombres del Dataset.
+
+```{r}
+dsPuntos <- leer_datos('datos/LecturaCSV_R.csv', encabezado = TRUE, factorizar=6,
+                       id="Puntos", dec = ".", sep = ",")
+#guardar_datos('datos/LecturaCSV_R.csv', dsPuntos)
+```
+
+## Visualización
+
+Podemos visualizar el Dataset y obtener su nombre, su cantidad de columnas y de filas usando el comando genérico print.
+
+```{r}
+print(dsPuntos)
+```
+
+# Modificaciones del Dataset
+
+En esta sección veremos diferentes modificaciones que podemos realizar a nuestro Dataset. En estos casos no se modificarán el Dataset original y obtendremos una copia con dichas modificaciones aplicadas. La modificación que se realice aparecerá reflejada en el nombre del Dataset con las modificaciones.
+
+## Estandarizar y normalizar
+
+La estandarización hace que los valores sigan una distribución normal con media 0 y desviación estandar 1, mientras que la normalización hace que los valores estén comprendidos en el rango entre 0 y 1, ambos incluídos.
+
+Podemos señalar las columnas del Dataset que queremos estandarizar o normalizar. Las columnas han de ser numéricas y no deberán estár ya factorizadas. Por defecto, se aplica a todas las columnas (numéricas).
+
+```{r}
+#Normalización
+print(normalizar(dsPuntos)) #automáticamente a todas las numéricas
+#Estandarización
+print(estandarizar(dsPuntos, 2)) #solo a la columna 2 (es numérica)
+```
+
+## Discretizar
+
+Mediante este proceso podemos factorizar las columnas numéricas en X tramos y sustituyendo cada elemento por el tramo al que pertenece. Esta factorización se denomina discretización.
+
+Para discretizar el Dataset, deberemos indicar una o varias columnas numéricas, cuantos puntos de corte se desean (los puntos de corte delimitan los tramos), y que algoritmo se usará para inferir los puntos de corte que nos delimiten los tramos para posteriormente discretizar.
+
+Uno de los algoritmos clásicos es equal width (igual anchura). Dado un vector de números reales y un número de intervalos, determina cuales son los puntos de corte para generar un vector categórico de tal manera que esos puntos están uniformemente distribuidos en el rango de los valores. Por ejemplo, si tenemos los valores (11.5, 10.2, 1.2, 0.5, 5.3, 20.5, 8.4) y queremos generar una variable categórica (su implementación en Python puede ser como un string) con cuatro posibles valores, tenemos que determinar tres puntos de corte, que serán valores que separen el intervalo (entre 0.5 y 20.5 en este caso) en 4 tramos de igual tamaño. Es decir, el primer tramo irá de 0.5 a 5.5, el segundo de 5.5 a 10.5, el tercero de 10.5 a 15.5 y el último de 15.5 a 20.5. Es decir, tendríamos 3 puntos de corte, 5.5, 10.5 y 15.5. Normalmente cuando se lleva a cabo esta tarea, ante un nuevo valor es necesario determinar a que intervalo pertence. Dado que cuando eso ocurre el valor puede estar fuera de los límites del vector original, el comienzo del primer tramos se suele considerar -infinito y el final del último como infinito. Es decir, una vez aplicado el algoritmo, el resultado sería un vector categórico de este estilo: '["I3", "I2", "I1", "I1", "I4", "I2"]', donde I1=(-infinito, 5.5], I2=(5.5, 10.5], I3=(10.5, 15.5], I4=(15.5, infinito). Otro de los algoritmos clásicos es equal frequency (igual frecuencia), donde el objetivo es buscar los puntos de corte que hagan que el número de valores del vector a discretizar que caen en cada uno de los intervalos sea el mismo (+- 1, según el número de intervalos y de puntos).
+
+Además, en caso de usar otro algoritmo de otro paquete de inferencia de puntos de corte, podemos discretizar también nuestro dataset usando los puntos de corte obtenidos.
+
+Veámos unos ejemplos.
+
+```{r}
+# Discretización igual anchura, con 3 puntos de corte (4 tramos) en columna 2
+print(discretizar(dsPuntos, 'anchura', 3, 2))
+```
+
+```{r}
+# Discretización igual frecuencia, con 3 puntos de corte (4 tramos) en columna 2
+print(discretizar(dsPuntos, 'frecuencia', 3, 2))
+```
+
+```{r}
+# Discretización con los puntos de corte proporcionados en columna 2
+print(discretizar(dsPuntos, 'manual', c(3,6,8), 2))
+```
+
+## Filtrado
+
+Podemos obtener un subconjunto del Dataset con los filtros que se consideren oportunos. Para ello, deberemos indicar en base a los valores de qué columna queremos filtrar y la función de filtrado. Veámos unos ejemplos:
+
+```{r}
+# Obtener filas que contengan "5" en la primera columna
+print(filtrar(dsPuntos, 1, function(x) x=="5"))
+# Obtener filas que contengan "Paula" en la tercera columna
+print(filtrar(dsPuntos, 3, function(x) x == "Paula"))
+# Obtener filas que contengan "Nerea" en la tercera columna
+print(filtrar(dsPuntos, 3, function(x) x == "Nerea"))
+# Obtener filas cuyos valores en la segunda fila sea superior a 4
+print(filtrar(dsPuntos, 2, function(x) x > 4))
+# Obtener filas que contengan "Alex" en la tercera columna
+#print(filtrar(dsPuntos, 3, function(x) x == "Alex"))
+# Al no obtener ninguna fila que cumpla la condición,
+# obtendremos un error indicándonos de la situación
+```
+
+# Cálculo de estadísticos en el Dataset
+
+En esta sección mostraremos diferentes estadísticos que podemos aplicar al Dataset y visualizaremos los resultados.
+
+## Varianza y entropía
+
+Podemos usar el comando 'varianzas' para obtener la varianza correspondiente a cada columna que sea numérica. En las no numéricas obtendremos NA. El resultado será un vector con el resultado de cada columna
+
+```{r}
+varianzas(dsPuntos)
+```
+
+En cuanto a la entropía, se aplicará por defecto a las columnas discretas (tipo character y factor), pero podemos obtenerla para todas las columnas si fijamos el parametro 'discrete' como TRUE. Por defecto obtendremos la entropía normalizada, entre 0 y 1, el sistema se encarga en estos casos de detectar cuántos valores distintos hay. De todas formas, podemos obtenerla también sin normalizar si así quisiesemos. Por último, podemos representar las entropías a través de un gráfico también.
+
+```{r}
+#entropías no normalizadas en columnas discretas
+entropias(dsPuntos, norm = FALSE)
+```
+
+```{r}
+#entropías normalizadas en todas las columas + gráfico
+entropias(dsPuntos, discrete = FALSE, norm = TRUE, plot=TRUE)
+```
+
+## Correlaciones e información mútua
+
+Es posible también observar cómo de relacionadas están las columnas del Dataset. Para las columnas numéricas usaremos 'correlaciones', mientras que para columnas discretas (factores y character) usaremos 'infmutuas'. Ambas funciones detectan automáticamente las columnas que son apropiadas. Podemos obtener también gráficos para analizar las relaciones.
+
+```{r}
+infmutuas(dsPuntos, plot=TRUE)
+```
+
+```{r}
+dfNumeros <- data.frame(first=c(3.2, 5.6, 7.1, 0.9, 8.5),
+                 second=c(4.4, 3.1, 1.2, 8.5, 6.3),
+                 third=c(4.7, 4.9, 5.3, 1.4, 2.8),
+                 fourth=c(0.4, 9.7, 8.6, 0.3, 8.5),
+                 fifth=c(3.1, 2.6, 9.8, 7.3, 4.0))
+dsNumeros <- dataset(dfNumeros)
+
+correlaciones(dsNumeros, plot=TRUE)
+```
+
+## Boxplot
+
+Tener una idea de cómo son nuestros datos es interesante. Por ello, también se ofrece visualizar mediante un Boxplot cada columna del Dataset, simplemente usando la función 'graficoBoxplot'
+
+```{r}
+graficoBoxplot(dsNumeros)
+```
+
+## Área bajo la curva ROC
+
+Una buena forma de analizar si una variable tiene potencial para predecir una etiqueta binaria es utilizar el área bajo la curva ROC (AUC). Aunque esta medida se usa habitualmente para evaluar clasificadores, también se puede aplicar sobre una variable.
+
+Dada una columna de valores y una columna de etiquetas de un Dataset, el algoritmo hace lo siguiente:
+
+1- Ordena ambas columnas en orden ascendente en base a la columna de valores. (No modifica el Dataset original)
+
+2- Por cada valor, se presupone que todos los anteriores a ese valor se han predicho como TRUE, y los siguientes como FALSE.
+
+3- Se comparan las etiquetas predichas con las originales de la columna de etiquetas y se calculan los ratios 'True Positive', 'False Positive', 'True Negative', 'False Negative', 'True Positive Rate' y 'False Positive Rate'.
+
+4- Finalmente, se obtiene la función/curva entre 'False Positive Rate' y 'True Positive Rate' y el área que quede bajo la curva será devuelto por esta función. La curva ROC es
+la curva que representa, para cada posible valor de corte, el TPR frente al FPR, y el área bajo la curva ROC es exactamente eso, el área que hay bajo esa curva
+
+Es posible pasar varias columnas como etiquetas a la vez en una misma llamada a esta función, en cuyo caso se obtendrá el área obtenida al aplicar el algoritmo anterior a cada columna.
+
+Las columnas de valores han de ser numéricas (sin ser categóricas, clase factor), y la columna de etiquetas de clase logical, es decir con TRUE y FALSE como valores.
+
+Una vez ejecutado se podrá visualizar la curva, donde la diagonal indica un área de 0.5 (para poder comparar y ver si obtenemos mucho mejor resultado (tiende hacia 1) o peor (tiende hacia 0)).
+
+Como ejemplo, crearemos un Dataset nuevo que contiene dos distribuciones normales, una indicando TRUE y la otra FALSE. Después, observaremos la curva ROC y su área obtenida.
+
+```{r}
+valoresTrue <- rnorm(100, mean=30, sd=20)
+valoresFalse <- rnorm(100, mean=70, sd=20)
+
+etiquetaTrue <- rep(TRUE, 100)
+etiquetaFalse <- rep(FALSE, 100)
+
+rocData <- data.frame(variable=c(valoresTrue, valoresFalse), 
+                      etiqueta=c(etiquetaTrue, etiquetaFalse))
+
+dsRoc <- dataset(rocData, id="roc")
+
+areasroc(dsRoc, 1, 2, plot=TRUE)
+```
+

@@ -19,5 +19,5 @@ Calcula las correlaciones entre pares de variables (columnas) de un \code{\linkS
 Se seleccionarán las columnas númericas automáticamente
 }
 \seealso{
-\code{infmutuas}
+\code{\link{infmutuas}}
 }

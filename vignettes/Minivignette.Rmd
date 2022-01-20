@@ -53,9 +53,9 @@ entr <- entropias(ds3)
 print(entr)
 entr <- entropias(ds3, discrete=FALSE)
 print(entr)
-entr <- entropias(ds3, discrete=TRUE,normalizar=c(6,8,6,2))
+entr <- entropias(ds3, discrete=TRUE,norm=TRUE)
 print(entr)
-entr <- entropias(ds3, discrete=FALSE,normalizar=c(6,8,6,2))
+entr <- entropias(ds3, discrete=FALSE,norm=TRUE)
 print(entr)
 ```
 
@@ -128,7 +128,7 @@ areasroc(dsRoc, 1, 2, plot=TRUE)
 
 
 ```{r}
-entropias(ds3, discrete=TRUE,normalizar=c(6,8,6,2), plot=TRUE)
+entropias(ds3, discrete=TRUE,norm=TRUE, plot=TRUE)
 ```
 
 ```{r}

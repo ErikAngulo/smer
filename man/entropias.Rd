@@ -4,7 +4,7 @@
 \alias{entropias}
 \title{Entropia del Dataset}
 \usage{
-entropias(ds, discrete = TRUE, normalizar = 2, plot = FALSE)
+entropias(ds, discrete = TRUE, norm = TRUE, plot = FALSE)
 }
 \arguments{
 \item{ds}{Objeto de tipo Dataset.}
@@ -13,16 +13,8 @@ entropias(ds, discrete = TRUE, normalizar = 2, plot = FALSE)
 las columnas de tipo \code{character} e \code{integer}. Con valor FALSE,
 se calculará en todas las columnas.}
 
-\item{normalizar}{En este parámetro se indicará cuántos valores posibles
-puede contener el Dataset de cara a obtener la entropía normalizada.
-En caso de que cada columna tenga diferentes valores posibles,
-el valor de este parámetro podrá ser un vector de longitud número de columnas
-donde cada posición indique la cantidad de valores posibles.
-En caso de \code{discrete=TRUE}, en las posiciónes de columnas no discretas
-se podrá usar cualquier instancia (ej: -1, NaN).
-Se puede usar un único número que será aplicado a todas las columnas.
-Por defecto este parámetro tiene el valor 2, lo que significa que
-no se obtendrán entropías normalizadas. Para más información, ver Details.}
+\item{norm}{Logical. Parametro para indicar si se desean obtener las entropías
+normalizadas o no. Por defecto, TRUE}
 
 \item{plot}{Logical. Mostrar la entropía de las columnas gráficamente.}
 }
@@ -39,14 +31,9 @@ o de las columnas discretas.
 De cara a normalizar, si una columna solo dispone de un único valor,
 independientemente del valor del parámetro siempre se obtendra 0.
 
-En caso de tener dos valores diferentes, se usará el parámetro con valor 2 (defecto),
-y la entropía siempre estará normalizada (entre valores 0 y 1).
+Si contiene más valores y se normaliza,
+la entropía siempre estará entre valores 0 y 1.
 
-Finalmente, en caso de tener más de dos valores diferentes se deberá especificar
-la cantidad de valores posibles si se desea normalizar (obtener valores entre 0 y 1).
-
-Internamente, la fórmula de la entropía está implementada con logaritmo en base 2,
-por ello cualquier columna que se desee normalizar que tenga más de 2 valores
-posibles se deberá indicar mediante el parámetro normalizar en la respectiva
-posición de la columna.
+Sin normalizar el valor de la entropía se considera como si tuviera
+2 valores distintos. Por ello, se recomienda normalizar.
 }
